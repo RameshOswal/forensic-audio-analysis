@@ -1,0 +1,23 @@
+Paper discusses using CNN to classify envioronmental sounds. 
+First Draft of Summary for Environmental_sound_classification_with_convolutional_neural_networks-
+CNN consisted of 2conv layers with max pooling layers an 2 fully cnnected layers.
+Experiments were performed on 3 datasets - ESC-10, ESC-50 and UrbanSound8k.
+Paper introduces CNN and gives n overview of different layer(conv layer, max pooling, full connected and Relu Layer) in CNN used in the paper. 
+	Relu Layer f(x)=max(0,x) - Faster computation and effcient gradient propagation. They don't saturate as in the case of sigmoids units. Drawbacks - dependent on the random weight initialization resulting into multiple weights falling into dead zone - zero gradient. Alternative to use Leaky RELU.
+
+	Droput Learning - Drop certain layer at each trainigin iteration so that we dont learn some spurious dependencies and creae complex co-adaptaton between hidden unit.
+
+Data sets - ESC-50, ESC-10 and UrbanSoun8k.
+	ESC-50 - 2000 recordings of ~2sec each containning 50 class labels equaly distributed. Contain Sound events of animal, water sounds, human etc. RandomForest ensemble with features as mel-frequency cepstral coefﬁcients and zero-crossing rate Accuracy - 44%, human accuray 81%
+
+	ESC-10 - 400 rec 10 class labels ad contains helicopter and some other recordings. Basline Classifier - 76% human benchmark 96%
+
+	UrbandSound8k - collection of 8732 short recordings of ~4sec containing class labels (air conditioner, car horn, playing children, dog bark, drilling, engine idling, gun shot, jackhammer, siren, street music) prearranged into 10 folds. Avg accuracy - 68%  and best performing variant accuracy 73.6%
+
+As sample size was too small data augmentation was done to increase the sample size. 
+	Random time delays to increase the sound duration.
+	Overlpping segments were created to increase sample size. 50% overlapping created 41 fraes whereas 905 overlapping creaed 101 frames. Silent segments were discarded.
+
+Results- Probability voting schemes proved good.
+
+Summary - CNN's work good with respect to the earlier experiments on non complex models. Still human accuracy gap is high ccompared to CNN  but can be reduced using more data. Also, future work include creating an ensemble of CNN and less complex models.
