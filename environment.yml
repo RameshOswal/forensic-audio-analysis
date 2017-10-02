@@ -1,0 +1,6 @@
+name: mlsp
+channels: !!python/tuple
+  - defaults
+dependencies:
+  - python=3.4
+  - numpy=1.13
