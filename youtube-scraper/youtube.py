@@ -7,18 +7,18 @@ from oauth2client.tools import argparser
 from subprocess import run
 
 def download_audio(url):
-    ''' Download audio '''
+    ''' Download audio 
+
+        url: video ID (the part after www.youtube.com/watch?v=)
+    '''
     print("URL: "+url)
     run(["youtube-dl", "--extract-audio", "--no-overwrites", "--audio-format", "wav", "-o", "./downloads/%(title)s_%(format)s.%(ext)s", url])
 
-# tab of
-#   https://cloud.google.com/console
-# Please ensure that you have enabled the YouTube Data API for your project.
-DEVELOPER_KEY = "AIzaSyDoK9CY-GPWbCbJb5MU3kkSxgcU7CKDCBI"
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
-
 def youtube_search(options):
+  DEVELOPER_KEY = "AIzaSyDoK9CY-GPWbCbJb5MU3kkSxgcU7CKDCBI"
+  YOUTUBE_API_SERVICE_NAME = "youtube"
+  YOUTUBE_API_VERSION = "v3"
+
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
     developerKey=DEVELOPER_KEY)
 
