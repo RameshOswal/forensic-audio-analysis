@@ -1,6 +1,26 @@
 name: mlsp
 channels: !!python/tuple
-  - defaults
+- defaults
 dependencies:
-  - python=3.4
-  - numpy=1.13
+- certifi=2016.2.28=py35_0
+- mkl=2017.0.3=0
+- numpy=1.12.1=py34_0
+- openssl=1.0.2l=0
+- pip=9.0.1=py35_1
+- python=3.5.4=0
+- readline=6.2=2
+- setuptools=36.4.0=py35_1
+- sqlite=3.13.0=0
+- tk=8.5.18=0
+- wheel=0.29.0=py35_0
+- xz=5.2.3=0
+- zlib=1.2.11=0
+- pip:
+  - google-api-python-client==1.6.4
+  - httplib2==0.10.3
+  - oauth2client==4.1.2
+  - pyasn1==0.3.7
+  - pyasn1-modules==0.1.5
+  - rsa==3.4.2
+  - six==1.11.0
+  - uritemplate==3.0.0

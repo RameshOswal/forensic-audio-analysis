@@ -3,10 +3,6 @@
 from youtube import *
 import csv
 
-class options:
-    q = "cessna"
-    max_results = 25
-
 if __name__ == "__main__":
     # Import and parse CSV
     prefix = "../../avfanatic_"
@@ -21,11 +17,9 @@ if __name__ == "__main__":
         for row in reader:
             if row[5] == "A":
                 print(row[3])
-                options.q = row[3]
-                options.max_results = 1
 
                 # Search for parsed term
-                results = youtube_search(options)
+                results = youtube_search(row[3], 1)
 
                 for result in results:
                     print(result)

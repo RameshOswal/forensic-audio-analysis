@@ -6,16 +6,21 @@ from oauth2client.tools import argparser
 
 from subprocess import run
 
-def download_audio(url):
+import api_keys
+
+def download_audio(url, filename="%(title)s_%(format)s", location="./downloads/"):
     ''' Download audio 
 
         url: video ID (the part after www.youtube.com/watch?v=)
+        filename: name of file; default is the video name and the audio format
+        location: include an ending slash!
     '''
-    print("URL: "+url)
-    run(["youtube-dl", "--extract-audio", "--no-overwrites", "--audio-format", "wav", "-o", "./downloads/%(title)s_%(format)s.%(ext)s", url])
+    print("URL: " + url + " Output: " + location + filename)
+        
+    run(["youtube-dl", "--extract-audio", "--no-overwrites", "--audio-format", "wav", "-o", location + filename + ".%(ext)s", url])
 
-def youtube_search(options):
-  DEVELOPER_KEY = "AIzaSyDoK9CY-GPWbCbJb5MU3kkSxgcU7CKDCBI"
+def youtube_search(query, max_results=25):
+  DEVELOPER_KEY = api_keys.youtube_key
   YOUTUBE_API_SERVICE_NAME = "youtube"
   YOUTUBE_API_VERSION = "v3"
 
@@ -25,9 +30,9 @@ def youtube_search(options):
   # Call the search.list method to retrieve results matching the specified
   # query term.
   search_response = youtube.search().list(
-    q=options.q,
+    q=query,
     part="id,snippet",
-    maxResults=options.max_results
+    maxResults=max_results
   ).execute()
 
   results = []
@@ -41,17 +46,3 @@ def youtube_search(options):
 
   return results
 
-if __name__ == "__main__":
-  argparser.add_argument("--q", help="Search term", default="Google")
-  argparser.add_argument("--max-results", help="Max results", default=25)
-  args = argparser.parse_args()
-
-  try:
-    results = youtube_search(args)
-  except HttpError as e:
-    print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
-
-  print("Results: ", results)
-
-  for result in range(len(results)):
-      download_audio(results[result])
