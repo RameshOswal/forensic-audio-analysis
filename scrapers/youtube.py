@@ -8,13 +8,16 @@ from subprocess import run
 
 import api_keys
 
-def download_audio(url):
+def download_audio(url, filename="%(title)s_%(format)s", location="./downloads/"):
     ''' Download audio 
 
         url: video ID (the part after www.youtube.com/watch?v=)
+        filename: name of file; default is the video name and the audio format
+        location: include an ending slash!
     '''
-    print("URL: "+url)
-    run(["youtube-dl", "--extract-audio", "--no-overwrites", "--audio-format", "wav", "-o", "./downloads/%(title)s_%(format)s.%(ext)s", url])
+    print("URL: " + url + " Output: " + location + filename)
+        
+    run(["youtube-dl", "--extract-audio", "--no-overwrites", "--audio-format", "wav", "-o", location + filename + ".%(ext)s", url])
 
 def youtube_search(query, max_results=25):
   DEVELOPER_KEY = api_keys.youtube_key
