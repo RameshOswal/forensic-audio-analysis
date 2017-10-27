@@ -3,7 +3,7 @@
 %% Import data
 
 % Navigate to and read images for helicopters
-cd ../../../../local_data/week3/heli_and_boat_short;
+cd ..;
 hY = [];
 n = 10;
 for i = 1:n
@@ -29,9 +29,26 @@ for i = 1:n
     bY = [bY x(:)];
 end
 
-
+b = [bY hY];
 
 % fs: samp frequency
 % t: signal duration in seconds
 % n: number of signals
 % by: dimensions fs*t x n
+
+
+cd mod_specgram;
+
+% add spec gram toolbox
+path_toolbox = '../../toolboxes/amtoolbox-full-0.9.9';
+addpath(genpath(path_toolbox));
+
+%output mod specgram
+for i = 1:2*n
+    c = modspecgram(hY(:,1),fs);
+    c = reshape(c, 1, []); %reshape into vector
+    outgram(i,:) = c;
+end
+
+save('specgrams.mat','outgram')  % function form
+

@@ -1,4 +1,4 @@
-function modspecgram(f,fs,varargin)
+function gram = modspecgram(f,fs,varargin)
 %MODSPECGRAM  Modulation spectrogram
 %   Usage:  modspecgram(f,fs);
 %           modspecgram(f,fs,...);
