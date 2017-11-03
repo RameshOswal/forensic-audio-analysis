@@ -1,8 +1,6 @@
-% Determine where your m-file's folder is.
-folder = fileparts(which(mfilename)); 
-% Add that folder plus all subfolders to the path.
-addpath(genpath(folder));
-
+% add spec gram toolbox
+path_toolbox = '../toolboxes/amtoolbox-full-0.9.9';
+addpath(genpath(path_toolbox));
 [x, fs] = audioread('Cessna 172 - Engine Change Start Up.wav');
 
 start_pos = 800000;
