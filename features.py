@@ -3,6 +3,15 @@ import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 
+def gen_mag_spec(raw_audio, plot=False, gen_csv=False):
+    ''' Generate a magnitude spectrogram from raw audio
+    '''
+    
+    init_ = librosa.stft(raw_audio[0])
+    D = librosa.amplitude_to_db(init_, ref=np.max)
+    
+    return D
+
 def gen_correlogram(raw_audio, plot=False, gen_csv=False):
     ''' Generates a correlogram feature vector from raw audio
         
@@ -12,10 +21,10 @@ def gen_correlogram(raw_audio, plot=False, gen_csv=False):
         gen_csv: if True, will output a csv file in this directory with 
             feature outputs
 
-        returns an N x F matrix of feature vectors
+        returns an F x M matrix of feature vectors
     '''
     # Parameters
-    acf_window = 40
+    acf_window = 10
     count_bins = 128 # Default for librosa, may want to change
 
     # Generate mel spectrograms
