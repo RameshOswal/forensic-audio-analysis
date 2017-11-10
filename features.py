@@ -10,7 +10,23 @@ def gen_mag_spec(raw_audio, plot=False, gen_csv=False):
     init_ = librosa.stft(raw_audio[0])
     D = librosa.amplitude_to_db(init_, ref=np.max)
     
-    return D
+    magnitude_spec = np.empty((1, 1025))
+    magnitude_spec = np.vstack((magnitude_spec, D.T))
+    
+    D = np.insert(D, 0, 0, 1)  # First Column Padding  -- array, index, padding, axis
+    D = np.insert(D, D.shape[1], 0, 1)  # Last Column Padding  -- array, index, padding, axis
+    
+    deltas = [np.empty((D.shape[1] - 1, D.shape[0])) for i in range(3)] 
+        
+    for i in range(1, D.shape[1] - 1):
+        deltas[0][i] = D[:, i] - D[:, i - 1]
+        deltas[1][i] = D[:, i + 1] - D[:, i]
+        deltas[2][i] = D[:, i + 1] - D[:, i - 1]
+    delta_stub = np.hstack((magnitude_spec, deltas[0]))
+    delta_stub = np.hstack((delta_stub, deltas[1]))
+    delta_stub = np.hstack((delta_stub, deltas[2]))
+    
+    return delta_stub[1:]
 
 def gen_correlogram(raw_audio, plot=False, gen_csv=False):
     ''' Generates a correlogram feature vector from raw audio
