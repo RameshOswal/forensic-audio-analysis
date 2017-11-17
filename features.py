@@ -2,8 +2,17 @@ import librosa
 import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
+import anurag_cnn.feat_extractor as cnn
 
-def gen_mag_spec(raw_audio, plot=False, gen_csv=False):
+def gen_cnn(raw_audio):
+    ''' Use a pre-trained CNN to extract features
+    '''
+    
+    features = cnn.main(raw_audio[0])
+    
+    return features
+
+def gen_mag_spec(raw_audio):
     ''' Generate a magnitude spectrogram from raw audio
     '''
     
