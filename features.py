@@ -3,12 +3,12 @@ import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 import anurag_cnn.feat_extractor as cnn
-
-def gen_cnn(raw_audio):
+from anurag_cnn.feat_extractor import usegpu
+def gen_cnn(raw_audio, use_gpu=True):
     ''' Use a pre-trained CNN to extract features
     '''
     
-    features = cnn.main(raw_audio[0])
+    features = cnn.main(raw_audio[0], use_gpu)
     
     return features
 

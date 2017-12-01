@@ -51,7 +51,7 @@ def getFeat(extractor,inpt, pool=False):
 
 srate = 44100 # Audio should use sample rate 44100
 pool = False # If pooling enabled, will generate one vector per audio clip
-def main(raw_audio):
+def main(raw_audio, use_gpu = True):
     y = raw_audio
         
     mel_feat = lib.feature.melspectrogram(y=y,sr=srate,n_fft=n_fft,hop_length=hop_length,n_mels=128)
@@ -69,8 +69,8 @@ def main(raw_audio):
     netType = getattr(netark,trainType)
     netx = netType(527,netwrkgpl)
     load_model(netx,pre_model_path)
-
-    
+    global usegpu
+    usegpu = use_gpu # Updating the usegpu variable based on passed value	
     if usegpu:
         netx.cuda()
     
