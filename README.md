@@ -1,6 +1,8 @@
 # forensic-audio-analysis
 MLSP - 2017
 
+Proposed Architecture Diagram: https://docs.google.com/drawings/d/1c0PNWLe1WDuelASDI7pf3m7id8mFdJdTljMAqomyce4/edit
+
 Google Drive (Required Admin Authentication!):
 https://drive.google.com/drive/folders/0B5xJpDEaUI6ERkhUaHhPUWZjVW8?usp=sharing
 
