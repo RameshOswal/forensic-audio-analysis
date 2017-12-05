@@ -14,7 +14,7 @@ n_fft = 1024
 hop_length = 512
 n_mels = 128
 trainType = 'weak_mxh64_1024'
-pre_model_path = '../anurag_cnn/mx-h64-1024_0d3-1.17.pkl'
+pre_model_path = os.path.join(os.path.dirname(__file__), 'mx-h64-1024_0d3-1.17.pkl')
 featType = 'layer18' # or layer 19 -  layer19 might not work well
 globalpoolfn = Fx.avg_pool2d # can use max also
 netwrkgpl = Fx.avg_pool2d # keep it fixed
@@ -50,7 +50,7 @@ def getFeat(extractor,inpt, pool=False):
         return pred
 
 srate = 44100 # Audio should use sample rate 44100
-pool = False # If pooling enabled, will generate one vector per audio clip
+pool = True # If pooling enabled, will generate one vector per audio clip
 def main(raw_audio, use_gpu = True):
     y = raw_audio
         
