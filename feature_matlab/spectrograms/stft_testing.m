@@ -1,43 +1,95 @@
-%% read audio
+%% generate test set heli
 
-samp_rate = 44100;
-[x,fs] = audioread('resources/heli_and_boat_short/boat6_short.wav'); %5 x 51143 gives 2 second long in each row
-x2 = mean(x,2);
-if fs ~= samp_rate
-    x2 = resample(x2,samp_rate,fs);
-    fs = samp_rate;
+myDir = 'resources/audio_data/heli/test'; %gets directory
+myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
+for k = 1:length(myFiles)
+  baseFileName = myFiles(k).name;
+  fullFileName = fullfile(myDir, baseFileName);
+  fprintf(1, 'Now reading %s\n', fullFileName);
+  if k == 1
+      stft_heli_test = call_stft(fullFileName);
+  else
+      stft_heli_test = [stft_heli_test; call_stft(fullFileName)];
+  end
+  % all of your actions for filtering and plotting go here
 end
-[s_vects, spec_size] =call_stft(x2, fs);
+cd output_mats;
+save('stft_heli_test.mat','stft_heli_test');
+cd ..;
+%% generate train set heli
 
-%% test output
-figure; 
-imagesc(reshape(s_vects(1,:),spec_size));
-title('test output');
-colormap jet;
-%% Examples (first is decimated, second is not)
-AUDIO_PATH = 'resources/heli_and_boat_short/boat5_short.wav';
+myDir = 'resources/audio_data/heli/train'; %gets directory
+myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
+for k = 1:length(myFiles)
+  baseFileName = myFiles(k).name;
+  fullFileName = fullfile(myDir, baseFileName);
+  fprintf(1, 'Now reading %s\n', fullFileName);
+  if k == 1
+      stft_heli_train = call_stft(fullFileName);
+  else
+      stft_heli_train = [stft_heli_train; call_stft(fullFileName)];
+  end
+  % all of your actions for filtering and plotting go here
+end
+cd output_mats;
+save('stft_heli_train.mat','stft_heli_train');
+cd ..;
+%% generate train set boat
 
-[x,fs] = audioread(AUDIO_PATH);
-x2 = mean(x,2);
-D = 3;
-x2s = decimate(x2,D);
-fs = fs/D;
+myDir = 'resources/audio_data/boat/train'; %gets directory
+myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
+for k = 1:length(myFiles)
+  baseFileName = myFiles(k).name;
+  fullFileName = fullfile(myDir, baseFileName);
+  fprintf(1, 'Now reading %s\n', fullFileName);
+  if k == 1
+      stft_boat_train = call_stft(fullFileName);
+  else
+      stft_boat_train = [stft_boat_train; call_stft(fullFileName)];
+  end
+  % all of your actions for filtering and plotting go here
+end
+cd output_mats;
+save('stft_boat_train.mat','stft_boat_train');
+cd ..;
+%% generate test set boat
 
-nw  = round(.03*fs);
-w = hamming(nw);
-spectrogram(x2s(1:2*fs),w,round(nw/2),[],fs,'yaxis')
-colormap jet
+myDir = 'resources/audio_data/boat/test'; %gets directory
+myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
+for k = 1:length(myFiles)
+  baseFileName = myFiles(k).name;
+  fullFileName = fullfile(myDir, baseFileName);
+  fprintf(1, 'Now reading %s\n', fullFileName);
+  if k == 1
+      stft_boat_test = call_stft(fullFileName);
+  else
+      stft_boat_test = [stft_boat_test; call_stft(fullFileName)];
+  end
+end
+cd output_mats;
+save('stft_boat_test.mat','stft_boat_test');
+cd ..;
 
-[x,fs] = audioread('resources/heli_and_boat_short/heli6_short.wav');
-x2 = mean(x,2);
-D = 1;
-x2s = decimate(x2,D);
-fs = fs/D;
-figure;
-nw  = round(.03*fs);
-
-w = hamming(nw);
-spectrogram(x2s(1:2*fs),w,round(nw/2),[],fs,'yaxis')
-colormap jet
 
 
+
+
+
+
+
+
+%% Undecimated frame 1
+test = 0;
+if test == 1
+    [x,fs] = audioread(AUDIO_PATH);
+    x2 = mean(x,2);
+    D = 1;
+    x2s = decimate(x2,D);
+    fs = fs/D;
+    figure;
+    nw  = round(.03*fs);
+    w = hamming(nw);
+    spectrogram(x2s(1:2*fs),w,round(nw/2),[],fs,'yaxis');
+    title('not downsampled');
+    colormap jet
+end

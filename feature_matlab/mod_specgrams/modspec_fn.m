@@ -1,4 +1,4 @@
-function [ output_modspec, modspec_size ] = modspec_fn( input_path )
+function [ output_modspec] = modspec_fn( input_path )
 % Modulation Spectrogram using Gammatone Filterbank
 %
 % Author: Raymond Xia (yangyanx@andrew.cmu.edu)
@@ -20,7 +20,7 @@ TWOPI = 2*pi;
 %%  Global parameters
 AUDIO_PATH = input_path;
 %AUDIO_PATH = 'resources/welcome16k.wav';
-SR = 16000; % sampling rat e
+SR = 16000; % sampling rate
 LONG_TERM_AVG = 1; % long-term average across time for subband envelope
 % Gammatone filterbank parameters 
 N = 128; % filterbank channel number
@@ -86,34 +86,34 @@ if LONG_TERM_AVG % optionally, take long-term average
     XF_env = bsxfun(@minus,XF_env,mean(XF_env,2));
 end
 % display section
-figure;
-N_START = DEMO_TSTART*SR; N_END = DEMO_TEND*SR;
-T = (N_START:N_END)'/SR;
-subplot(311); % envelope plot
-plot(T,XF(DEMO_CHAN,(N_START:N_END)+1),T,XF_env(DEMO_CHAN,(N_START:N_END)+1));
-chan_str = ['Channel ',num2str(DEMO_CHAN)];
-legend(chan_str,[chan_str,' Envelope']);
-subplot(312); % magnitude response of envelope
-[h,w] = freqz(XF_env(DEMO_CHAN,(N_START:N_END)+1),1,NFFT);
-f = w/TWOPI*SR; % convert to Hz
-plot(f,20*log10(abs(h)));
-xlabel('Frequency (Hz)'); ylabel('Mag Resp (dB)');
-ax = gca; ax.YLim = [-50,50];
-subplot(313); % zoomed-in magnitude response at low frequency
-frange = (f >= DEMO_FSTART) & (f <= DEMO_FEND);
-plot(f(frange),20*log10(abs(h(frange))));
-ax = gca; ax.YLim = [-10,20];
-xlabel('Frequency (Hz)'); ylabel('Mag Resp (dB)');
+% figure;
+% N_START = DEMO_TSTART*SR; N_END = DEMO_TEND*SR;
+% T = (N_START:N_END)'/SR;
+% subplot(311); % envelope plot
+% plot(T,XF(DEMO_CHAN,(N_START:N_END)+1),T,XF_env(DEMO_CHAN,(N_START:N_END)+1));
+% chan_str = ['Channel ',num2str(DEMO_CHAN)];
+% legend(chan_str,[chan_str,' Envelope']);
+% subplot(312); % magnitude response of envelope
+% [h,w] = freqz(XF_env(DEMO_CHAN,(N_START:N_END)+1),1,NFFT);
+% f = w/TWOPI*SR; % convert to Hz
+% plot(f,20*log10(abs(h)));
+% xlabel('Frequency (Hz)'); ylabel('Mag Resp (dB)');
+% ax = gca; ax.YLim = [-50,50];
+% subplot(313); % zoomed-in magnitude response at low frequency
+% frange = (f >= DEMO_FSTART) & (f <= DEMO_FEND);
+% plot(f(frange),20*log10(abs(h(frange))));
+% ax = gca; ax.YLim = [-10,20];
+% xlabel('Frequency (Hz)'); ylabel('Mag Resp (dB)');
 
 %% Bandpass filter using modulated hamming window
 Nw = round(2*(SR/F_BW)+1); % hamming window length
 w = hamming(Nw); w = w/(w'*w); % normalize energy
 w = w .* exp(1j*TWOPI*(F_CENTER/SR)*(0:Nw-1)'); % modulation
 [hw,ww] = freqz(w,1,NFFT);
-figure;
+% figure;
 fw = ww/TWOPI*SR; % convert to Hz
-plot(fw,20*log10(abs(hw)));
-xlabel('Frequency (Hz)'); ylabel('Bandpass Filter Magnitude Response (dB)');
+% plot(fw,20*log10(abs(hw)));
+% xlabel('Frequency (Hz)'); ylabel('Bandpass Filter Magnitude Response (dB)');
 
 XF_mod = abs(filter(w,1,XF_env.').').^2;
 
@@ -124,32 +124,33 @@ if DECIMATE
         tmp = [tmp;decimate(XF_mod(chan,:),DECIMATE_FACTOR)];
     end
     XF_mod = tmp;
-    XF_mod_display = XF_mod(:,((N_START/DECIMATE_FACTOR):(N_END/DECIMATE_FACTOR))+1);
+%    XF_mod_display = XF_mod(:,((N_START/DECIMATE_FACTOR):(N_END/DECIMATE_FACTOR))+1);
 else
-    XF_mod_display = XF_mod(:,(N_START:N_END)+1);
+%    XF_mod_display = XF_mod(:,(N_START:N_END)+1);
 end
 
-% Vectorize output
-output_modspec = 10*log10(XF_mod);
+% Generate output
+
+output_modspec = generate_delta_mat(10*log10(XF_mod));
 modspec_size = size(XF_mod);
 
 
-%% Interpolate and display modulation spectrogram
-figure;
-T_full = (N_START:N_END)/SR;
-if DECIMATE
-    T_mod = T_full(1:DECIMATE_FACTOR:end);
-else
-    T_mod = T_full;
-end
-F_full = linspace(0,SR/2,NFFT/2+1)';
-XF_mod_interp = interp2(T_mod,CF,XF_mod_display,T_full,F_full);
-imagesc(T_full,F_full,10*log10(abs(XF_mod_interp)));
-%% Display output
-%imagesc(T_full,F_full,abs(XF_mod_interp));
-axis xy; colormap(jet);
-xlabel('Time (s)'); ylabel('Frequency (Hz)'); colorbar
-title('Modulation Spectrogram');
+% %% Interpolate and display modulation spectrogram
+% figure;
+% T_full = (N_START:N_END)/SR;
+% if DECIMATE
+%     T_mod = T_full(1:DECIMATE_FACTOR:end);
+% else
+%     T_mod = T_full;
+% end
+% F_full = linspace(0,SR/2,NFFT/2+1)';
+% XF_mod_interp = interp2(T_mod,CF,XF_mod_display,T_full,F_full);
+% imagesc(T_full,F_full,10*log10(abs(XF_mod_interp)));
+% %% Display output
+% %imagesc(T_full,F_full,abs(XF_mod_interp));
+% axis xy; colormap(jet);
+% xlabel('Time (s)'); ylabel('Frequency (Hz)'); colorbar
+% title('Modulation Spectrogram');
 
 
 end
