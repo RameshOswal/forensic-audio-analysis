@@ -1,5 +1,8 @@
+repo_root = "/home/andy/mlsp_project/forensic-audio-analysis/"
+
 import sys
-sys.path.append('./scrapers')
+sys.path.append(repo_root)
+sys.path.append(repo_root + "/scrapers")
 
 import youtube
 import audio
@@ -19,14 +22,20 @@ in it. Run the script and it will produce a prediction.
 test_URL = "GUulA_5eTPI"
 
 # Download the audio to a temp location
+download_path = repo_root + "downloads/demo/"
+
+print("============================")
 print("Downloading Youtube audio...")
-#youtube.download_audio(test_URL, filename=test_URL)
-files = glob.glob("./downloads/*.wav")
-audio.split_clips(files)
+print("============================")
+youtube.download_audio(test_URL, location=download_path, filename=test_URL)
+files = glob.glob(download_path + "*.wav")
+audio.split_clips(files, location=download_path + "processed/")
 
-files = glob.glob("./downloads/processed/*.wav")
+files = glob.glob(download_path + "processed/*.wav")
 
+print("============================")
 print("Generating features...")
+print("============================")
 for file_name in files:
     print(file_name)
 
@@ -35,11 +44,13 @@ for file_name in files:
     # Generate features
     cnn = features.gen_cnn(raw, use_gpu=True)
 
-    with open('./downloads/features_cnn.csv', 'ab') as f_handle:
+    with open(download_path + "features_cnn.csv", "ab") as f_handle:
         np.savetxt(f_handle, cnn, fmt='%.6e', delimiter=',')
     
 # Run classifiers
+print("============================")
 print("Running classification...")
+print("============================")
 prediction = 10
 
 print("My prediction is %i" % prediction)
