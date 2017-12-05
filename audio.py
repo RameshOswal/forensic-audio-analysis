@@ -1,6 +1,7 @@
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
+from subprocess import run
 
 # Parameters
 sampling_rate = 44100 # All clips will be converted to this rate
@@ -22,3 +23,10 @@ def import_wav(file, plot=False):
         plt.show()
 
     return raw_data
+
+def split_clips(file_list, location="./downloads/processed/", length="10"):
+    for file in file_list:
+        file_comp = file.split("/")
+        file_noext = file_comp[-1][:-4]
+
+        run(["ffmpeg", "-i", file, "-f", "segment", "-segment_time", length, "-c", "copy", location + file_noext + "_%03d.wav"])
