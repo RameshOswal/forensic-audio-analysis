@@ -1,95 +1,82 @@
+%% get toolbox
+addpath(genpath('toolboxes/gammatonegram/'));
+
+%% read audio
+test = 0;
+if test
+    path = 'resources/audio_all/heli/test/Bky6CenOORY_015.wav';
+    [ms_deltas] = modspec_fn(path);
+end
+
 %% generate test set heli
 
-myDir = 'resources/audio_data/heli/test'; %gets directory
+myDir = 'resources/audio_used/heli/test'; %gets directory
 myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
 for k = 1:length(myFiles)
   baseFileName = myFiles(k).name;
   fullFileName = fullfile(myDir, baseFileName);
   fprintf(1, 'Now reading %s\n', fullFileName);
   if k == 1
-      stft_heli_test = call_stft(fullFileName);
+      modspec_heli_test = modspec_fn(fullFileName);
   else
-      stft_heli_test = [stft_heli_test; call_stft(fullFileName)];
+      modspec_heli_test = [modspec_heli_test; modspec_fn(fullFileName)];
   end
   % all of your actions for filtering and plotting go here
 end
 cd output_mats;
-save('stft_heli_test.mat','stft_heli_test');
+save('modspec_heli_test.mat','modspec_heli_test');
 cd ..;
 %% generate train set heli
 
-myDir = 'resources/audio_data/heli/train'; %gets directory
+myDir = 'resources/audio_used/heli/train'; %gets directory
 myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
 for k = 1:length(myFiles)
   baseFileName = myFiles(k).name;
   fullFileName = fullfile(myDir, baseFileName);
   fprintf(1, 'Now reading %s\n', fullFileName);
   if k == 1
-      stft_heli_train = call_stft(fullFileName);
+      modspec_heli_train = modspec_fn(fullFileName);
   else
-      stft_heli_train = [stft_heli_train; call_stft(fullFileName)];
+      modspec_heli_train = [modspec_heli_train; modspec_fn(fullFileName)];
   end
   % all of your actions for filtering and plotting go here
 end
 cd output_mats;
-save('stft_heli_train.mat','stft_heli_train');
+save('modspec_heli_train.mat','modspec_heli_train');
 cd ..;
 %% generate train set boat
 
-myDir = 'resources/audio_data/boat/train'; %gets directory
+myDir = 'resources/audio_used/boat/train'; %gets directory
 myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
 for k = 1:length(myFiles)
   baseFileName = myFiles(k).name;
   fullFileName = fullfile(myDir, baseFileName);
   fprintf(1, 'Now reading %s\n', fullFileName);
   if k == 1
-      stft_boat_train = call_stft(fullFileName);
+      modspec_boat_train = modspec_fn(fullFileName);
   else
-      stft_boat_train = [stft_boat_train; call_stft(fullFileName)];
+      modspec_boat_train = [modspec_boat_train; modspec_fn(fullFileName)];
   end
   % all of your actions for filtering and plotting go here
 end
 cd output_mats;
-save('stft_boat_train.mat','stft_boat_train');
+save('modspec_boat_train.mat','modspec_boat_train');
 cd ..;
-%% generate test set boat
+% generate test set boat
 
-myDir = 'resources/audio_data/boat/test'; %gets directory
+myDir = 'resources/audio_used/boat/test'; %gets directory
 myFiles = dir(fullfile(myDir,'*.wav')); %gets all wav files in struct
 for k = 1:length(myFiles)
   baseFileName = myFiles(k).name;
   fullFileName = fullfile(myDir, baseFileName);
   fprintf(1, 'Now reading %s\n', fullFileName);
   if k == 1
-      stft_boat_test = call_stft(fullFileName);
+      modspec_boat_test = modspec_fn(fullFileName);
   else
-      stft_boat_test = [stft_boat_test; call_stft(fullFileName)];
+      modspec_boat_test = [modspec_boat_test; modspec_fn(fullFileName)];
   end
 end
 cd output_mats;
-save('stft_boat_test.mat','stft_boat_test');
+save('modspec_boat_test.mat','modspec_boat_test');
 cd ..;
 
-
-
-
-
-
-
-
-
-%% Undecimated frame 1
-test = 0;
-if test == 1
-    [x,fs] = audioread(AUDIO_PATH);
-    x2 = mean(x,2);
-    D = 1;
-    x2s = decimate(x2,D);
-    fs = fs/D;
-    figure;
-    nw  = round(.03*fs);
-    w = hamming(nw);
-    spectrogram(x2s(1:2*fs),w,round(nw/2),[],fs,'yaxis');
-    title('not downsampled');
-    colormap jet
-end
