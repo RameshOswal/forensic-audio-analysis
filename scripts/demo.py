@@ -9,6 +9,7 @@ import audio
 import features
 import glob
 import numpy as np
+from sklearn.externals import joblib
 
 '''
 Instructions:
@@ -51,6 +52,23 @@ for file_name in files:
 print("============================")
 print("Running classification...")
 print("============================")
-prediction = 10
+#CNN Classifier 62%Accuracy on dev set
+cnnClfWt = 0.62
+cnnClf = joblib.load('../../data/cnnLR.pkl') #Trained CNN features using LR with L1 norm.
+cnnPrediction, cnnPredProb = cnnClf.predict(testX),cnnClf.predict_proba(testX)
+
+
+def weightedMjorityVoting(clf_weights={}, clfs_pred={}):#currently using only one clf which is based on cnn features
+	##Weights of classifer is used to make majority decision.
+	## clfs_pred is a dict containing predictions from each classifier, all classifiers should have same number of predictions
+	maj_sum = 0
+	for clf in clfs_pred.keys():
+		y = 1 if clfs_pred[clf] == 1 else -1 #making a 0 prediction which is a helicopter to -1 to make majority decison easily
+		maj_sum += y * clf_weights[clf]
+
+	return [1 if maj_sum >= 0 else 0]  
+prediction = []
+for idx in range(cnnPrediction.shape[0]):
+	prediction += weightedMjorityVoting(clf_weights={'cnn':cnnClfWt}, clfs_pred={'cnn':cnnPrediction[idx]} )
 
 print("My prediction is %i" % prediction)
