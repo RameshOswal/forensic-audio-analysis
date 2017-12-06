@@ -52,9 +52,11 @@ for file_name in files:
 print("============================")
 print("Running classification...")
 print("============================")
+
 #CNN Classifier 62%Accuracy on dev set
+testX = cnn
 cnnClfWt = 0.62
-cnnClf = joblib.load('../../data/cnnLR.pkl') #Trained CNN features using LR with L1 norm.
+cnnClf = joblib.load(repo_root + 'scripts/cnnLR.pkl') #Trained CNN features using LR with L1 norm.
 cnnPrediction, cnnPredProb = cnnClf.predict(testX),cnnClf.predict_proba(testX)
 
 
@@ -71,4 +73,4 @@ prediction = []
 for idx in range(cnnPrediction.shape[0]):
 	prediction += weightedMjorityVoting(clf_weights={'cnn':cnnClfWt}, clfs_pred={'cnn':cnnPrediction[idx]} )
 
-print("My prediction is %i" % prediction)
+print("My prediction is ", prediction)

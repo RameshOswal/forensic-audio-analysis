@@ -38,7 +38,7 @@ youtube.download_audio(test_URL, location=download_path + "raw/", filename=test_
 files = glob.glob(download_path + "raw/*.wav")
 audio.split_clips(files, location=download_path + "split/")
 
-files = glob.glob(download_path + "split/*.wav")
+files = glob.glob(download_path + "split/" + test_URL + "*.wav")
 
 print("============================")
 print("Generating features...")
@@ -58,9 +58,12 @@ for file_name in files:
 
     # Generate features
     cnn = features.gen_cnn(raw, use_gpu=True)
-    
-    feat_vect = cnn
 
     with open(download_path + "features/" + test_URL + "." + label + ".cnn.csv", "ab") as f_handle:
-        np.savetxt(f_handle, feat_vect, fmt='%.6e', delimiter=',')
+        np.savetxt(f_handle, cnn, fmt='%.6e', delimiter=',')
+        
+    #corr = features.gen_correlogram(raw)
+
+    #with open(download_path + "features/" + test_URL + "." + label + ".corr.csv", "ab") as f_handle:
+    #    np.savetxt(f_handle, corr, fmt='%.6e', delimiter=',')
 
