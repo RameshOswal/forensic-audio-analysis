@@ -2,8 +2,8 @@ import librosa
 import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
-import anurag_cnn.feat_extractor as cnn
-from anurag_cnn.feat_extractor import usegpu
+#import anurag_cnn.feat_extractor as cnn
+#from anurag_cnn.feat_extractor import usegpu
 def gen_cnn(raw_audio, use_gpu=True):
     ''' Use a pre-trained CNN to extract features
     '''
@@ -89,3 +89,35 @@ def gen_correlogram(raw_audio, plot=False, gen_csv=False):
         np.savetxt('correlogram.csv', features, delimiter=',')
 
     return np.array(features)
+
+########### Code to compute Contsant-Q Features
+def delta(a, b):
+    return a-b
+def constQFeatureExtractor(curr_col, prev_col, next_col):
+    d1 = delta(curr_col, prev_col)
+    d2 = delta(curr_col, next_col)
+    dd = delta(prev_col, next_col)
+    vector = np.concatenate((curr_col,d1,d2,dd))
+    return vector
+
+def gen_constantQ(raw_audio='', label=None):
+##   filename - path and name of file for which we need to get the constQ spectograms
+##   label = 'something' if we want to assign labels to them else None
+    X = []
+    Y = []
+    C = librosa.cqt(raw_audio[0], sr=raw_audio[1])
+    magC = np.abs(C)
+    for i in range(1,magC.shape[1]-1):
+        curr_col=magC[:,i]
+        prev_col=magC[:,i-1]
+        next_col=magC[:,i+1]
+        feature_vector = constQFeatureExtractor(curr_col=curr_col, prev_col=prev_col, next_col=next_col)
+        X += [feature_vector]
+        #Adding str(i) which says the time interval for that particular id.
+        if label != None:
+            Y += [label]
+    if label == None:
+        return np.array(X)
+    else:
+        return np.array(X),np.array(Y)
+     
