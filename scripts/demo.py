@@ -10,6 +10,8 @@ import features
 import glob
 import numpy as np
 from sklearn.externals import joblib
+from pathlib import Path
+#import matlab_mlsp
 
 '''
 Instructions:
@@ -20,7 +22,7 @@ in it. Run the script and it will produce a prediction.
 '''
 
 # Enter URL here (just the part after the watch?v=)
-test_URL = "TP55UHP99LA"
+test_URL = "Ik0k7ggiYcs"
 
 # Download the audio to a temp location
 download_path = repo_root + "downloads/demo/"
@@ -28,7 +30,10 @@ download_path = repo_root + "downloads/demo/"
 print("============================")
 print("Downloading Youtube audio...")
 print("============================")
-youtube.download_audio(test_URL, location=download_path, filename=test_URL)
+file_check = Path(download_path + test_URL + ".wav")
+if not file_check.exists():
+    youtube.download_audio(test_URL, location=download_path, filename=test_URL)
+    
 files = glob.glob(download_path + "*.wav")
 audio.split_clips(files, location=download_path + "processed/")
 
@@ -51,6 +56,8 @@ for file_name in files:
     file_dict["cnn"] = features.gen_cnn(raw, use_gpu=True)
         
     file_dict["corr"] = np.transpose(features.gen_correlogram(raw_audio=raw))
+
+    #file_dict["modspec"] = matlab_mlsp.gen_modspec(file_name)
     
     file_list.append(file_dict)
     
@@ -75,7 +82,7 @@ cnnClf = joblib.load(repo_root + 'scripts/cnnLR.pkl') # Trained on CNN features 
 corrClf = joblib.load(repo_root + 'scripts/Corr_LR_L1_.pkl') # Trained on correlogram features using LR with L1 norm
 
 # Weights are equal to each classifier's accuracy
-clf_weights = {"cnn": 0.62, "corr": 0.67}
+clf_weights = {"cnn": 0.62, "corr": 0.60}
 
 prediction = []
 
