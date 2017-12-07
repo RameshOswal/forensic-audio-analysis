@@ -50,7 +50,7 @@ def gen_correlogram(raw_audio, plot=False, gen_csv=False):
     '''
     # Parameters
     acf_window = 10
-    count_bins = 20 # Default for librosa, may want to change
+    count_bins = 128 # Default for librosa, may want to change
 
     # Generate mel spectrograms
     spec = librosa.feature.melspectrogram(raw_audio[0], sr=raw_audio[1], n_mels=count_bins)
